@@ -25,7 +25,7 @@ if (css) {
             $('base').before(css);
         } else {
             $('head').append(css);
-        } 
+        }
     }
 }
 
@@ -41,27 +41,27 @@ var _isFixed = !_isIE6 && !_isMobile;
 var artDialog = function (options, ok, cancel) {
 
     var originalOptions = options = options || {};
-    
+
 
     if (typeof options === 'string' || options.nodeType === 1) {
-    
+
         options = {content: options, fixed: !_isMobile};
     }
-    
+
 
     options = $.extend(true, {}, artDialog.defaults, options);
     options.original = originalOptions;
 
     var id = options.id = options.id || _expando + _count;
     var api = artDialog.get(id);
-    
-    
+
+
     // 如果存在同名的对话框对象，则直接返回
     if (api) {
         return api.focus();
     }
-    
-    
+
+
     // 目前主流移动设备对fixed支持不好，禁用此特性
     if (!_isFixed) {
         options.fixed = false;
@@ -73,7 +73,7 @@ var artDialog = function (options, ok, cancel) {
         options.modal = true;
         options.backdropOpacity = 0;
     }
-    
+
 
     // 按钮组
     if (!$.isArray(options.button)) {
@@ -85,7 +85,7 @@ var artDialog = function (options, ok, cancel) {
     if (cancel !== undefined) {
         options.cancel = cancel;
     }
-    
+
     if (options.cancel) {
         options.button.push({
             id: 'cancel',
@@ -94,13 +94,13 @@ var artDialog = function (options, ok, cancel) {
             display: options.cancelDisplay
         });
     }
-    
-    
+
+
     // 确定按钮
     if (ok !== undefined) {
         options.ok = ok;
     }
-    
+
     if (options.ok) {
         options.button.push({
             id: 'ok',
@@ -109,7 +109,7 @@ var artDialog = function (options, ok, cancel) {
             autofocus: true
         });
     }
-    
+
 
     return artDialog.list[id] = new artDialog.create(options);
 };
@@ -130,7 +130,7 @@ artDialog.create = function (options) {
     this.options = options;
     this._popup = $popup;
 
-    
+
     $.each(options, function (name, value) {
         if (typeof that[name] === 'function') {
             that[name](value);
@@ -163,7 +163,7 @@ artDialog.create = function (options) {
         that._trigger('cancel');
         event.preventDefault();
     });
-    
+
 
     // 添加视觉参数
     this._$('dialog').addClass(this.skin);
@@ -205,7 +205,7 @@ artDialog.create = function (options) {
         if (!isTop || rinput.test(nodeName) && target.type !== 'button') {
             return;
         }
-        
+
         if (keyCode === 27) {
             that._trigger('cancel');
         }
@@ -219,7 +219,7 @@ artDialog.create = function (options) {
 
 
     _count ++;
-    
+
     artDialog.oncreate(this);
 
     return this;
@@ -237,7 +237,7 @@ $.extend(prototype, {
      * @name artDialog.prototype.show
      * @param   {HTMLElement Object, Event Object}  指定位置（可选）
      */
-    
+
     /**
      * 显示对话框（模态）
      * @name artDialog.prototype.showModal
@@ -326,13 +326,13 @@ $.extend(prototype, {
      * @event
      */
 
-    
+
     /**
      * 设置内容
      * @param    {String, HTMLElement}   内容
      */
     content: function (html) {
-    
+
         var $content = this._$('content');
 
         // HTMLElement
@@ -346,11 +346,11 @@ $.extend(prototype, {
         } else {
             $content.html(html);
         }
-                
+
         return this.reset();
     },
-    
-    
+
+
     /**
      * 设置标题
      * @param    {String}   标题内容
@@ -379,7 +379,7 @@ $.extend(prototype, {
     /**
      * 设置按钮组
      * @param   {Array, String}
-     * Options: value, callback, autofocus, disabled 
+     * Options: value, callback, autofocus, disabled
      */
     button: function (args) {
         args = args || [];
@@ -387,8 +387,8 @@ $.extend(prototype, {
         var html = '';
         var number = 0;
         this.callbacks = {};
-        
-           
+
+
         if (typeof args === 'string') {
             html = args;
             number ++;
@@ -418,12 +418,12 @@ $.extend(prototype, {
                 + '</button>';
 
                 that._$('button')
-                .on('click', '[i-id=' + id +']', function (event) {                
+                .on('click', '[i-id=' + id +']', function (event) {
                     var $this = $(this);
                     if (!$this.attr('disabled')) {// IE BUG
                         that._trigger(id);
                     }
-                
+
                     event.preventDefault();
                 });
 
@@ -448,16 +448,16 @@ $.extend(prototype, {
     _$: function (i) {
         return this._popup.find('[i=' + i + ']');
     },
-    
-    
+
+
     // 触发按钮回调函数
     _trigger: function (id) {
-        var fn = this.callbacks[id];
-            
+        var fn = this.callbacks[id] || this.options['_' + id];
+
         return typeof fn !== 'function' || fn.call(this) !== false ?
             this.close().remove() : this;
     }
-    
+
 });
 
 
